@@ -1,40 +1,21 @@
-<?php 
+<?php  
 
-include_once('includes/connection.php');
-include_once('includes/article.php');
+class Article {
+	public function fetch_all() {
+		global $pdo;
 
-$article = new Article;
+		$query = $pdo->prepare("SELECT * FROM articles");
+		$query->execute();
+		return $query->fetchAll();
+	}
 
-if (isset($_GET['id'])) {
-	$id = $_GET['id'];
-	$data = $article->fetch_data($id);
-	//print_r($data);
-
-	?>
-
-	<html lang="en">
-	<head>
-		<title>Content Management System</title>
-		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="assets/style.css" />
-	</head>
-	<body>
-		<div class="container">
-			<a href="index.php" id="logo">Portal</a>
-			<h4><?php echo $data['article_title']; ?> -
-				<small>
-					posted <?php echo date('l jS', $data['article_timestamp']); ?>
-				</small>
-			</h4>
-			<p><?php echo $data['article_content']; ?></p>
-			<a href="index.php">&larr; Back</a>
-		</div>
-	</body>
-	</html>
-	<?php 
-} else {
-	header('Location: index.php');
-	exit();
+	public function fetch_data($article_id) {
+		global $pdo;
+		$query = $pdo->prepare("SELECT * FROM articles WHERE article_id = ? ");
+		$query->bindValue(1, $article_id);
+		$query->execute();
+		return $query->fetch();
+	}
 }
 
 ?>
